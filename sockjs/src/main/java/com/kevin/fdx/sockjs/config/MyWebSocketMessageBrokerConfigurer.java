@@ -1,15 +1,13 @@
 package com.kevin.fdx.sockjs.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 /**
- * WebsocketMessageBrokerConfigurer<br/>
+ * MyWebSocketMessageBrokerConfigurer<br/>
  * com.kevin.fdx.sockjs.config<br/>
  * kevin<br/>
  * 2020/7/1 16:33<br/>
@@ -17,7 +15,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
  */
 @Configuration
 @EnableWebSocketMessageBroker   // 此注解表示使用STOMP协议来传输基于消息代理的消息
-class MessageBrokerConfigurer implements WebSocketMessageBrokerConfigurer {
+class MyWebSocketMessageBrokerConfigurer implements WebSocketMessageBrokerConfigurer {
 
     /**
      * 注册STOMP的端点
