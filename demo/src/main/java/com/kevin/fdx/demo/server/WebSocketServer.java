@@ -57,7 +57,8 @@ public class WebSocketServer {
      * @throws IOException
      */
     @OnOpen
-    public void onOpen(Session session, @PathParam(value = "name") String username) throws IOException {
+    public void onOpen(Session session, @PathParam(value = "name") String username)
+            throws IOException {
         sessionPools.put(username, session);
         online.incrementAndGet();
         logger.info(username + "加入websocket,当前人数为" + online.get());

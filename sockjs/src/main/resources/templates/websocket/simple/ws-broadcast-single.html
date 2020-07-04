@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Spring Boot+WebSocket+广播式</title>
+    <title>Spring Boot+WebSocket+点对点</title>
 </head>
 <body onload="disconnect()">
 <div>
@@ -35,14 +35,14 @@
     }
 
     function connect() {
-        // websocket的连接地址，此值等于WebSocketMessageBrokerConfigurer中registry.addEndpoint("/websocket-simple").withSockJS()配置的地址
-        var socket = new SockJS('/websocket-simple');
+        // websocket的连接地址，此值等于WebSocketMessageBrokerConfigurer中registry.addEndpoint("/websocket-simple-single").withSockJS()配置的地址
+        var socket = new SockJS('/websocket-simple-single');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function(frame) {
             setConnected(true);
             console.log('===>Connected: ' + frame);
-            // 客户端订阅消息的目的地址：此值BroadcastController中被@SendTo("/topic/getResponse")注解的里配置的值
-            stompClient.subscribe('/topic/getResponse', function(response){
+            // 客户端订阅消息的目的地址：此值等于BroadcastController中@SendToUser("/topic/getResponse")注解的里配置的值。这是请求的地址必须使用/user前缀
+            stompClient.subscribe('/user/topic/getResponse', function(response){
                 showResponse(JSON.parse(response.body).responseMessage)
             });
         });
@@ -58,8 +58,8 @@
 
     function sendName() {
         var name = $('#name').val();
-        // 客户端消息发送的目的：服务端使用BroadcastController中@MessageMapping("/receive")注解的方法来处理发送过来的消息
-        stompClient.send("/receive", {}, JSON.stringify({ 'name': name }));
+        // 客户端消息发送的目的：服务端使用BroadcastController中@MessageMapping("/receive-single")注解的方法来处理发送过来的消息
+        stompClient.send("/receive-single", {}, JSON.stringify({ 'name': name }));
     }
 
     function showResponse(message) {

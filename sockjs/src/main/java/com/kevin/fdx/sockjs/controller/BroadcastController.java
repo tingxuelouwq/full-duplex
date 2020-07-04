@@ -7,7 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -36,7 +38,8 @@ public class BroadcastController {
     public ResponseDTO broadcast(RequestDTO requestDTO) {
         logger.info("receive message: " + JsonUtil.bean2Json(requestDTO));
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setResponseMessage(getClass().getSimpleName() + " receive [" + count.incrementAndGet() + "] records");
+        responseDTO.setResponseMessage(getClass().getSimpleName() + " receive [" +
+                count.incrementAndGet() + "] records");
         return responseDTO;
     }
 
@@ -45,6 +48,23 @@ public class BroadcastController {
         logger.info("remote host: " + request.getRemoteHost());
 
         ModelAndView modelAndView = new ModelAndView("/websocket/simple/ws-broadcast");
+        return modelAndView;
+    }
+
+    @MessageMapping("/receive-single")
+    @SendToUser("/topic/getResponse")
+    public ResponseDTO broadcastSingle(RequestDTO requestDTO) {
+        logger.info("receive message: " + JsonUtil.bean2Json(requestDTO));
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setResponseMessage(getClass().getSimpleName() + " receive [" +
+                count.incrementAndGet() + "] records");
+        return responseDTO;
+    }
+
+    @RequestMapping("/broadcast-single/index")
+    public ModelAndView broadcastSingleIndex(HttpServletRequest request) {
+        logger.info("remote host: " + request.getRemoteHost());
+        ModelAndView modelAndView = new ModelAndView("/websocket/simple/ws-broadcast-single");
         return modelAndView;
     }
 }
