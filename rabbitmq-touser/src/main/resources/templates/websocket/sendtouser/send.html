@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>模拟发送消息</title>
+</head>
+<body>
+接收者用户:<input type="text" id="username" name="username" th:value="${session.loginName}" />
+<p>
+    消息内容:<input type="text" id="message" name="message" />
+<p>
+<input type="button" id="send" value="发送" />
+
+<script src="/websocket/jquery-3.5.1.js"></script>
+<script type=text/javascript>
+    $("#send").click(function(){
+        $.post("sendToUser",
+            {
+                username: $('#username').val(),
+                message: $('#message').val()
+            },
+            function(data, status){
+                alert("status: " + status);
+            });
+    });
+</script>
+</html>

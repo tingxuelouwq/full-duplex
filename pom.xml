@@ -21,6 +21,7 @@
         <module>demo</module>
         <module>sockjs</module>
         <module>rabbitmq</module>
+        <module>rabbitmq-touser</module>
     </modules>
 
     <properties>
