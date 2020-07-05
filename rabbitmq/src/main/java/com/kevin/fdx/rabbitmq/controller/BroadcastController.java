@@ -1,15 +1,13 @@
-package com.kevin.fdx.sockjs.controller;
+package com.kevin.fdx.rabbitmq.controller;
 
 import com.kevin.fdx.core.util.JsonUtil;
-import com.kevin.fdx.sockjs.dto.RequestDTO;
-import com.kevin.fdx.sockjs.dto.ResponseDTO;
+import com.kevin.fdx.rabbitmq.dto.RequestDTO;
+import com.kevin.fdx.rabbitmq.dto.ResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -33,8 +31,11 @@ public class BroadcastController {
      */
     private AtomicInteger count = new AtomicInteger(0);
 
-    @MessageMapping("/receive")
-    @SendTo("/topic/getResponse")
+    @MessageMapping("/receive-rabbitmq")
+//    @SendTo("/exchange/rabbitmq/get-response")
+//    @SendTo("/queue/rabbitmq")
+//    @SendTo("/amq/queue/rabbitmq2")
+    @SendTo("/topic/get-response")
     public ResponseDTO broadcast(RequestDTO requestDTO) {
         logger.info("receive message: " + JsonUtil.bean2Json(requestDTO));
         ResponseDTO responseDTO = new ResponseDTO();
@@ -43,28 +44,11 @@ public class BroadcastController {
         return responseDTO;
     }
 
-    @GetMapping("/broadcast/index")
+    @GetMapping("/broadcast-rabbitmq/index")
     public ModelAndView broadcastIndex(HttpServletRequest request) {
         logger.info("remote host: " + request.getRemoteHost());
 
-        ModelAndView modelAndView = new ModelAndView("/websocket/simple/ws-broadcast");
-        return modelAndView;
-    }
-
-    @MessageMapping("/receive-single")
-    @SendToUser("/topic/getResponse")
-    public ResponseDTO broadcastSingle(RequestDTO requestDTO) {
-        logger.info("receive message: " + JsonUtil.bean2Json(requestDTO));
-        ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setResponseMessage(getClass().getSimpleName() + " receive [" +
-                count.incrementAndGet() + "] records");
-        return responseDTO;
-    }
-
-    @RequestMapping("/broadcast-single/index")
-    public ModelAndView broadcastSingleIndex(HttpServletRequest request) {
-        logger.info("remote host: " + request.getRemoteHost());
-        ModelAndView modelAndView = new ModelAndView("/websocket/simple/ws-broadcast-single");
+        ModelAndView modelAndView = new ModelAndView("/websocket/rabbitmq/ws-broadcast-rabbitmq");
         return modelAndView;
     }
 }
