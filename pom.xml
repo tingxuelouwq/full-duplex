@@ -23,6 +23,7 @@
         <module>rabbitmq</module>
         <module>rabbitmq-touser</module>
         <module>cluster</module>
+        <module>cluster-uid</module>
     </modules>
 
     <properties>
