@@ -11,3 +11,5 @@ spring:
     port: 6379
     database: 0
     password: tttx
+server:
+  port: 8090
