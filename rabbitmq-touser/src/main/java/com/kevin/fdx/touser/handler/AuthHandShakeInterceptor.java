@@ -1,4 +1,4 @@
-package com.kevin.fdx.rabbitmq.interceptor;
+package com.kevin.fdx.touser.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.kevin.fdx.rabbitmq.dto;
+package com.kevin.fdx.touser.dto;
 
 /**
  * kevin<br/>

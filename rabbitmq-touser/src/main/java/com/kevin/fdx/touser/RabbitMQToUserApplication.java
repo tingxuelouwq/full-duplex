@@ -1,4 +1,4 @@
-package com.kevin.fdx.rabbitmq;
+package com.kevin.fdx.touser;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

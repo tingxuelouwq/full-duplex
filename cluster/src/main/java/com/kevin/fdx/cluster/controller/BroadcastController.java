@@ -1,11 +1,12 @@
-package com.kevin.fdx.rabbitmq.controller;
+package com.kevin.fdx.cluster.controller;
 
 import com.kevin.fdx.core.util.JsonUtil;
-import com.kevin.fdx.rabbitmq.dto.ResponseDTO;
+import com.kevin.fdx.cluster.dto.ResponseDTO;
+import com.kevin.fdx.cluster.service.RedisSessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,11 +28,14 @@ public class BroadcastController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private RedisSessionService redisSessionService;
 
     @GetMapping("/login")
     public ModelAndView loginPage() {
-        return new ModelAndView("/websocket/sendtouser/login");
+        return new ModelAndView("/websocket/cluster/login");
     }
 
     @PostMapping("/login")
@@ -40,7 +44,7 @@ public class BroadcastController {
                                String password) {
         HttpSession session = request.getSession();
         session.setAttribute("loginName", username);
-        return new ModelAndView("/websocket/sendtouser/ws-sendtouser-rabbitmq");
+        return new ModelAndView("/websocket/cluster/ws-cluster-rabbitmq");
     }
 
     @GetMapping("/send")
@@ -51,8 +55,21 @@ public class BroadcastController {
     @PostMapping("/sendToUser")
     public void sendToUser(String username, String message) {
         logger.info("===> 接收到消息, username: {}, message: {}", username, message);
+
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setResponseMessage(message);
-        simpMessagingTemplate.convertAndSendToUser(username, "/topic/demo", JsonUtil.bean2Json(responseDTO));
+
+        // 根据用户名获取对应的websocket sessionid
+        String wsSessionId = redisSessionService.get(username);
+        // 生成路由键，规则为: websocket订阅目的地+"-user"+websocket的sessionid
+        String routingKey = getTopicRoutingKey("demo", wsSessionId);
+
+        logger.info("===> 发送消息, username: {}, message: {}, sessionid: {}, routingKey: {}",
+                username, JsonUtil.bean2Json(responseDTO), wsSessionId, routingKey);
+        rabbitTemplate.convertAndSend("amq.topic", routingKey, JsonUtil.bean2Json(responseDTO));
+    }
+
+    private String getTopicRoutingKey(String destination, String sessionId) {
+        return destination + "-user" + sessionId;
     }
 }

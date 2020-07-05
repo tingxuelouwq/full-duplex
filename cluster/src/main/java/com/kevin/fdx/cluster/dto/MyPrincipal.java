@@ -1,4 +1,4 @@
-package com.kevin.fdx.rabbitmq.dto;
+package com.kevin.fdx.cluster.dto;
 
 import java.security.Principal;
 

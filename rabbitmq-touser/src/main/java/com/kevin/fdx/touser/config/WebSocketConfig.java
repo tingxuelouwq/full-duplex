@@ -1,7 +1,7 @@
-package com.kevin.fdx.rabbitmq.config;
+package com.kevin.fdx.touser.config;
 
-import com.kevin.fdx.rabbitmq.interceptor.AuthHandShakeInterceptor;
-import com.kevin.fdx.rabbitmq.interceptor.MyPrincipalHandShakeInterceptor;
+import com.kevin.fdx.touser.handler.AuthHandShakeInterceptor;
+import com.kevin.fdx.touser.handler.MyPrincipalHandshakeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -18,7 +18,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Autowired
-    private MyPrincipalHandShakeInterceptor myPrincipalHandShakeInterceptor;
+    private MyPrincipalHandshakeHandler myPrincipalHandshakeHandler;
 
     @Autowired
     private AuthHandShakeInterceptor authHandShakeInterceptor;
@@ -32,7 +32,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/websocket-sendtouser-rabbitmq")
                 .addInterceptors(authHandShakeInterceptor)
-                .setHandshakeHandler(myPrincipalHandShakeInterceptor)
+                .setHandshakeHandler(myPrincipalHandshakeHandler)
                 .setAllowedOrigins("*")
                 .withSockJS();
     }
