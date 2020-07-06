@@ -46,7 +46,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // STOMP Broker Relay将消息发送到外部消息代理
         registry.enableStompBrokerRelay("/exchange", "/topic", "/queue", "/amq/queue")
                 .setRelayHost("localhost")      // rabbitmq-host服务器地址
-                .setRelayPort(61613)            // rabbitmq-stomp服务器端口
+//                .setRelayPort(61613)            // rabbitmq-stomp服务器端口
                 .setClientLogin("guest")        // 登录账户
                 .setClientPasscode("guest");    // 登录密码
     }
